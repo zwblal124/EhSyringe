@@ -50,9 +50,11 @@
   },
   "dependencies": {
     "emoji-regex": "^8.0.0",
+    "jsonata": "^1.7.0",
     "keypair": "^1.0.1",
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",
+    "match-url-wildcard": "0.0.4",
     "normalize.css": "^8.0.1",
     "pako": "^1.0.10",
     "rxjs": "^6.5.4",

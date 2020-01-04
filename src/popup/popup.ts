@@ -1,3 +1,4 @@
+/*
 
 import { html, nothing, render, svg } from 'lit-html';
 import { browser } from 'webextension-polyfill-ts';
@@ -375,3 +376,4 @@ ${state.configValue ? this._settingPanelTemplate() : nothing}`;
 }
 
 window.onload = () => new Popup();
+*/
