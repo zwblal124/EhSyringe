@@ -1,58 +1,7 @@
 import {browser} from 'webextension-polyfill-ts';
 import jsonata from "jsonata";
+import {SyringeScript} from "../interface";
 const matchUrl = require("match-url-wildcard");
-
-
-interface SyringeScript {
-    name: string;
-    key: string;
-    version: string;
-    author: string[];
-    description: string;
-    match: string[];
-    data: any;
-    modules: SyringeModule[];
-}
-
-type SyringeModule = SyringeDOMReplaceModule | SyringeInputHintModule;
-
-interface SyringeDOMReplaceModule {
-    performer: "DOMReplace";
-    parameter: {
-        rules: SyringeDOMReplaceRule[]
-    }
-}
-
-interface SyringeDOMReplaceRule {
-    nodeName?: string[];
-    matches?: string[];
-    dictionary?: {[key: string]: string} | string;
-    read?: string; // attr:title textContent innerHTML innerText
-    write?: string;
-    cloneNode?: boolean;
-    replaces?: SyringeDOMReplaceReg[];
-}
-
-interface SyringeDOMReplaceReg {
-    pattern: string;
-    flags?: string;
-    replace: string;
-}
-
-interface SyringeInputHintModule {
-    performer: "InputHint";
-    parameter: {
-        matches: string[];
-        dataset: SyringeInputHintDataset[] | string;
-    }
-}
-
-interface SyringeInputHintDataset {
-    label: string;
-    value: string;
-    [key: string] : string;
-}
-
 
 const script: SyringeScript = {
     "name": "",
@@ -60,7 +9,7 @@ const script: SyringeScript = {
     "version": "0.1",
     "author": [""],
     "description": "",
-    "match": ["e-henati.org", "exhentai.org"],
+    "match": ["e-hentai.org", "exhentai.org"],
     "data": { // 存储数据
         "tags": [
             {"namespace": "parody", "key": "touhou project", "name": "东方系列"}
@@ -594,6 +543,15 @@ const script: SyringeScript = {
                             'Generate a static forum image link': '生成用于论坛的图片链接',
                             'Click here if the image fails loading': '重新加载图片',
                         },
+                    },
+                    {
+                        matches: ['#rating_label'],
+                        replaces:[ //             text = text.replace(/Average: ([\d\.]+)/, '平均值：$1');
+                            {
+                                pattern: 'Average: ([\\d\\.]+)',
+                                replace: '平均值：$1',
+                            }
+                        ]
                     }
 
                     /*                    {
@@ -642,13 +600,9 @@ const script: SyringeScript = {
 
 (async () => {
 
-    console.log('启动');
-
     const runnerUrl = chrome.runtime.getURL('script/main.js');
     const r = await fetch(runnerUrl);
     const runnerScript = await r.text();
-    console.log('runnerScript', runnerScript);
-
 
     function jsonataAnalysis(value: any, fullData: any) {
         if(typeof value === 'object') {
@@ -676,10 +630,8 @@ const script: SyringeScript = {
     browser.tabs.onUpdated.addListener(async (tabId: number, changeInfo, tab) => {
         if (changeInfo['status'] != 'loading') return;
         let dataScript = '';
-        console.log('url: ', tab.url);
         for(const scriptPack of executeScripts) {
             if (scriptPack.match.find(rule => matchUrl(tab.url, rule))) {
-                console.log('匹配到');
                 const data = scriptPack.data;
                 const code = `if(!window.syringe) window.syringe = {};\nwindow.syringe["${scriptPack.key}"] = ${data};\n`;
                 dataScript += code;

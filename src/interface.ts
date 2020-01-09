@@ -81,3 +81,54 @@ export interface DownloadStatus {
     complete: boolean;
     error: boolean;
 }
+
+export interface SyringeScript {
+    name: string;
+    key: string;
+    version: string;
+    author: string[];
+    description: string;
+    match: string[];
+    data: any;
+    modules: SyringeModule[];
+}
+
+export type SyringeModule = SyringeDOMReplaceModule | SyringeInputHintModule;
+
+export interface SyringeDOMReplaceModule {
+    performer: "DOMReplace";
+    parameter: {
+        rules: SyringeDOMReplaceRule[]
+    }
+}
+
+export interface SyringeDOMReplaceRule {
+    nodeName?: string[] | Set<string>;
+    matches?: string[];
+    dictionary?: {[key: string]: string} | string;
+    read?: string; // attr:title textContent innerHTML innerText
+    write?: string;
+    cloneNode?: boolean;
+    replaces?: SyringeDOMReplaceReg[];
+}
+
+export interface SyringeDOMReplaceReg {
+    pattern: string;
+    flags?: string;
+    replace: string;
+}
+
+export interface SyringeInputHintModule {
+    performer: "InputHint";
+    parameter: {
+        matches: string[];
+        dataset: SyringeInputHintDataset[] | string;
+    }
+}
+
+export interface SyringeInputHintDataset {
+    label: string;
+    value: string;
+    [key: string] : string;
+}
+
