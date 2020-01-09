@@ -30,7 +30,6 @@ const script: SyringeScript = {
                             'Petition to Rename': '申请重命名',
                             ' Read Later': ' 稍后再读',
                             ' Added to Read Later': ' 已添加稍后再读',
-
                             'language:': '语言:',
                             'parody:': '原作:',
                             'character:': '角色:',
@@ -552,8 +551,16 @@ const script: SyringeScript = {
                                 replace: '平均值：$1',
                             }
                         ]
+                    },
+                    {
+                        matches: ['#gright > #gd5 > p > a'],
+                        replaces:[ //             text = text.replace(/Average: ([\d\.]+)/, '平均值：$1');
+                            {
+                                pattern: 'Torrent Download \\( (\\d+) \\)',
+                                replace: '种子下载（$1）',
+                            }
+                        ]
                     }
-
                     /*                    {
                                             "nodeName": ["#TEXT"], // 遍历节点匹配nodename
                                             "dictionary": "JSONATA:data.tags{namespace & ':' & key: name}", // http://try.jsonata.org/BkFU1x6k8

@@ -20,7 +20,6 @@ for(const rule of DOMReplaceRules) {
 }
 
 let documentEnd = false;
-
 window.document.addEventListener('DOMContentLoaded', (e) => {
     documentEnd = true;
 });
@@ -46,7 +45,8 @@ observer.observe(window.document, {
 function translateNode(node: Element) {
     for(const rule of DOMReplaceRules) {
         const nodeName = node.nodeName.toLowerCase();
-        if (nodeName === 'script' || nodeName === 'style') { continue; }
+        const parentNodeName = node.parentNode ? node.parentNode.nodeName.toLowerCase() : '';
+        if (nodeName === 'script' || nodeName === 'style' || parentNodeName == 'script' || parentNodeName == 'style') { continue; }
 
         if(rule.nodeName){
             if(!(rule.nodeName as Set<string>).has(nodeName)) {
@@ -71,11 +71,9 @@ function translateNode(node: Element) {
             const attrKey = read.slice(5);
             value = node.getAttribute(attrKey) || '';
         }
-
-
         if (typeof rule.dictionary === 'object') {
             const newValue = rule.dictionary[value];
-            if(newValue !== value) {
+            if(newValue && newValue !== value) {
                 if(!newValue) {
                     console.log('dictionary', value, newValue);
                 }
